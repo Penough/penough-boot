@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.penough.boot</groupId>
+  <artifactId>penough-boot</artifactId>
+  <packaging>pom</packaging>
+  <version>0.0.1</version>
+  <modules>
+    <module>penough-dependencies</module>
+    <module>penough-common</module>
+    <module>penough-swagger2-starter</module>
+    <module>penough-logger-starter</module>
+    <module>penough-core</module>
+  </modules>
+
+  <name>penough-boot</name>
+  <!-- penough -->
+  <url>http://www.penough.com</url>
+
+  <description>JMGO BOOT通用架构</description>
+
+  <properties>
+    <penough-dependencies.version>0.0.1</penough-dependencies.version>
+    <lombok.version>1.18.14</lombok.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.penough.boot</groupId>
+        <artifactId>penough-dependencies</artifactId>
+        <version>${penough-dependencies.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.alibaba</groupId>
+      <artifactId>fastjson</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>cn.hutool</groupId>
+      <artifactId>hutool-all</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.hibernate.validator</groupId>
+        <artifactId>hibernate-validator</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+<!--  <distributionManagement>-->
+<!--    <repository>-->
+<!--      <id>penough-release</id>-->
+<!--      <url>http://192.168.10.40:8081/repository/jmgo-release/</url>-->
+<!--    </repository>-->
+<!--  </distributionManagement>-->
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-deploy-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+
+</project>
