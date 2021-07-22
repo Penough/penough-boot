@@ -1,13 +1,11 @@
 package org.penough.boot.core.constants;
 
 /**
- * 创建人： liujin
- * 创建时间： 2020年5月27日 上午10:26:55
- * 
  * 功能说明：
  * 用于定义通用常量。不允许添加除此外的逻辑。
  *
- *
+ * @author Pneough
+ * @date 2021/1/1
  */
 public class Constants {
 	public static final String WIN_LINE_BREAK = "\r\n";
@@ -15,6 +13,7 @@ public class Constants {
 	public static final String STR_0 = "0";
 	public static final String SYMBOL_COMMA = ",";
 	public static final int INT_0 = 0;
+	public static final String SYS_USER = "system";
 	
 
 	public static final String ERRCODE = "errcode";

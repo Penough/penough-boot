@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import org.penough.boot.core.constants.Constants;
 import org.penough.boot.core.core.utils.ThreadLocalUtil;
+import org.penough.boot.core.database.entity.BaseEntity;
 import org.penough.boot.core.database.entity.SuperEntity;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,10 +41,12 @@ public class PeMetaObjectHandler implements MetaObjectHandler {
     @Override
     public void insertFill(MetaObject metaObject) {
         Object orginalObj = metaObject.getOriginalObject();
-        if(orginalObj instanceof SuperEntity){
+        if(orginalObj instanceof BaseEntity){
             setTimeField(metaObject, orginalObj, CREATE_TIME);
-            setTimeField(metaObject, orginalObj, MODIFY_TIME);
             setUserField(metaObject, orginalObj, CREATE_USER);
+        }
+        if(orginalObj instanceof SuperEntity){
+            setTimeField(metaObject, orginalObj, MODIFY_TIME);
             setUserField(metaObject, orginalObj, MODIFY_USER);
         }
     }
