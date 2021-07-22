@@ -30,18 +30,6 @@ public class BaseMybatisConfiguration {
         this.databaseProperties = databaseProperties;
     }
 
-//    /**
-//     * 引入Mysql分页插件
-//     * @return
-//     */
-//    @Order(5)
-//    @Bean
-//    @ConditionalOnMissingBean
-//    public PaginationInnerInterceptor paginationInnerInterceptor(){
-//        PaginationInnerInterceptor interceptor = new PaginationInnerInterceptor(DbType.MYSQL);
-//        return interceptor;
-//    }
-
     /**
      * 引入Mp插件集合，包含分页插件，乐观锁插件，sql规范插件，防止全表更新/删除插件
      *

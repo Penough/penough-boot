@@ -1,4 +1,4 @@
-package com.jmgo;
+package org.penough;
 
 import static org.junit.Assert.assertTrue;
 

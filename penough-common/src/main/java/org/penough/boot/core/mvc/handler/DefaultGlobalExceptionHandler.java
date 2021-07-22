@@ -44,8 +44,8 @@ import java.util.stream.Collectors;
 public abstract class DefaultGlobalExceptionHandler {
     @ExceptionHandler(BaseBusinessException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ApiResult JmgoBIException(BaseBusinessException ex, HttpServletRequest request) {
-        log.warn("JmgoBIException:", ex);
+    public ApiResult BaseBusinessException(BaseBusinessException ex, HttpServletRequest request) {
+        log.warn("BaseBusinessException:", ex);
         return ApiResult.result(ex, null).setPath(request.getRequestURI());
     }
 
@@ -201,7 +201,7 @@ public abstract class DefaultGlobalExceptionHandler {
     public ApiResult otherExceptionHandler(Exception ex, HttpServletRequest request) {
         log.warn("Exception:", ex);
         if (ex.getCause() instanceof BaseBusinessException) {
-            return this.JmgoBIException((BaseBusinessException) ex.getCause(), request);
+            return this.BaseBusinessException((BaseBusinessException) ex.getCause(), request);
         }
         return ApiResult.result(ExceptionCode.SYSTEM_BUSY, null).setPath(request.getRequestURI());
     }

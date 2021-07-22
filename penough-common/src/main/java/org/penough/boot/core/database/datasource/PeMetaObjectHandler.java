@@ -2,7 +2,7 @@ package org.penough.boot.core.database.datasource;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
-import com.jmgo.boot.core.exceptions.constants.Constants;
+import org.penough.boot.core.constants.Constants;
 import org.penough.boot.core.core.utils.ThreadLocalUtil;
 import org.penough.boot.core.database.entity.SuperEntity;
 import lombok.NoArgsConstructor;
@@ -83,7 +83,7 @@ public class PeMetaObjectHandler implements MetaObjectHandler {
             // 获取本地用户对象
             Object userObj = ThreadLocalUtil.getUser();
             if(userObj == null) return;
-            // 反射获取用户openId
+            // 反射获取用户编码getUserCode()
             String userCode = String.valueOf(reflectInvokeMethod(userObj, GETTER_PREFIX + upperFirst(Constants.USER_CODE_FIELD), null));
             this.setFieldValByName(userField, userCode, obj);
         }

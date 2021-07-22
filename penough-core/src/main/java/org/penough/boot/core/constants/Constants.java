@@ -28,7 +28,7 @@ public class Constants {
 	public static final String STATUS = "status";
 	public static final String VALUE = "value";
 	public static final String LOCAL_USER_KEY = "applet_user";
-	public static final String USER_CODE_FIELD = "openId";
+	public static final String USER_CODE_FIELD = "userCode";
 	public static final int SUCCESS_STATUS = 200;
 	public static final String SUCCESS_CODE = "success";
 	public static final int FAILED_STATUS = 500;

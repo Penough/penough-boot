@@ -18,7 +18,7 @@ import java.util.Map;
 @Data
 @ConfigurationProperties(prefix = SwaggerProperties.PREFIX)
 public class SwaggerProperties {
-    public static final String PREFIX = "jmgo.swagger";
+    public static final String PREFIX = "penough.swagger";
     /**
      * 是否开启swagger
      **/
@@ -46,7 +46,7 @@ public class SwaggerProperties {
     /**
      * 描述
      **/
-    private String description = "JMGO SWAGGER2在线文档";
+    private String description = "SWAGGER2在线文档";
     /**
      * 版本
      **/
@@ -69,7 +69,7 @@ public class SwaggerProperties {
     /**
      * swagger会解析的包路径
      **/
-    private String basePackage = "com.jmgo";
+    private String basePackage = "com.penough";
     /**
      * 扩展swagger 基础路径
      */
@@ -178,7 +178,7 @@ public class SwaggerProperties {
         /**
          * 描述
          **/
-        private String description = "JMGO SWAGGER2在线文档";
+        private String description = "SWAGGER2在线文档";
         /**
          * 版本
          **/
@@ -306,8 +306,8 @@ public class SwaggerProperties {
     @NoArgsConstructor
     public static class Basic {
         private Boolean enable = false;
-        private String username = "jmgo";
-        private String password = "jmgo";
+        private String username = "penough";
+        private String password = "penough";
     }
 
     @Data

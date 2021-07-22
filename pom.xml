@@ -20,7 +20,7 @@
   <!-- penough -->
   <url>http://www.penough.com</url>
 
-  <description>JMGO BOOT通用架构</description>
+  <description>PENOUGH BOOT后台脚手架</description>
 
   <properties>
     <penough-dependencies.version>0.0.1</penough-dependencies.version>
@@ -64,12 +64,6 @@
     </dependency>
   </dependencies>
 
-<!--  <distributionManagement>-->
-<!--    <repository>-->
-<!--      <id>penough-release</id>-->
-<!--      <url>http://192.168.10.40:8081/repository/jmgo-release/</url>-->
-<!--    </repository>-->
-<!--  </distributionManagement>-->
 
   <build>
     <plugins>

@@ -121,13 +121,6 @@
         </dependencies>
     </dependencyManagement>
 
-<!--    <distributionManagement>-->
-<!--        <repository>-->
-<!--            <id>jmgo-release</id>-->
-<!--            <url>http://192.168.10.40:8081/repository/jmgo-release/</url>-->
-<!--        </repository>-->
-<!--    </distributionManagement>-->
-
     <profiles>
         <profile>
             <!-- 打包的 -P参数 -->

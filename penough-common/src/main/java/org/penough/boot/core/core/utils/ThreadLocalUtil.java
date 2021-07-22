@@ -1,7 +1,7 @@
 package org.penough.boot.core.core.utils;
 
 import cn.hutool.core.convert.Convert;
-import com.jmgo.boot.core.exceptions.constants.Constants;
+import org.penough.boot.core.constants.Constants;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
