@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import org.penough.boot.core.exceptions.BaseBusinessException;
 import org.penough.boot.core.exceptions.code.ExceptionCode;
-import org.penough.boot.mvc.mapper.SuperMapper;
+import org.penough.boot.database.mapper.SuperMapper;
 
 import java.util.List;
 

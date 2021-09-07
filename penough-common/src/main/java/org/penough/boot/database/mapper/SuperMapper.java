@@ -1,4 +1,4 @@
-package org.penough.boot.mvc.mapper;
+package org.penough.boot.database.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
