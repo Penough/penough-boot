@@ -18,6 +18,7 @@ import java.util.Map;
  * @author Penough
  *
  */
+@Deprecated
 @Slf4j
 public class String2DateConverter extends BaseDateConverter<Date> implements Converter<String, Date> {
 

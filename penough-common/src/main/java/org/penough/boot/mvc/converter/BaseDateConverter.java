@@ -10,6 +10,7 @@ import java.util.function.Function;
  * @author Penough
  *
  */
+@Deprecated
 public abstract class BaseDateConverter<T> {
 
     public T convert(String source, Function<String, T> function) {

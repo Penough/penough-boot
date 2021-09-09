@@ -14,6 +14,7 @@ import java.util.Map;
  * @author Penough
  *
  */
+@Deprecated
 public class String2LocalTimeConverter extends BaseDateConverter<LocalTime> implements Converter<String, LocalTime> {
 
     protected static final Map<String, String> FORMAT = new LinkedHashMap(1);

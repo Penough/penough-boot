@@ -13,6 +13,7 @@ import org.penough.boot.database.mybatis.conditions.query.QueryWrap;
 import org.penough.boot.mvc.controller.request.PageVO;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.Map;
 
 /**
@@ -69,6 +70,7 @@ public interface PageController<Entity, PageDTO> extends BaseController<Entity> 
             page.setSize(defSize);
         }
         Entity model = BeanUtil.toBean(params.getModel(), getEntityClass());
+        dealEmptyStr(model);
         QueryWrap<Entity> wrapper = Wraps.q(model);
 
         handlerWrapper(wrapper, params);
@@ -116,4 +118,27 @@ public interface PageController<Entity, PageDTO> extends BaseController<Entity> 
         // 调用注入方法
     }
 
+    /**
+     * 空串处理<br/>
+     * 该步骤是为了应对{@link #query(PageVO,IPage,Long)}方法内的{@link Wraps#q(Entity)}构造方法 <br/>
+     * 由于Wraps的skipEmpty在直接通过实体构造的情况下是不生效的(只在eq,ge等方法生效) <br/>
+     * 且空串一般情况下是不参与查询过滤的 <br/>
+     * 因此在该方法前进行一次字符串字段的判空处理，如果为空串则直接置空 <br/>
+     * 如果不需要判空处理，重写即可
+     * @param model 实体
+     */
+    default void dealEmptyStr(Entity model){
+        Field[] fields = model.getClass().getDeclaredFields();
+        Arrays.stream(fields).forEach(f -> {
+            try {
+                f.setAccessible(true);
+                Object val = f.get(model);
+                if(val instanceof String){
+                    if(StringUtils.isBlank((String)val)) f.set(model, null);
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        });
+    }
 }
