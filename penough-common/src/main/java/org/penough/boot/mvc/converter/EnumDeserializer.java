@@ -7,6 +7,7 @@ import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import lombok.extern.slf4j.Slf4j;
+import org.penough.boot.database.enumeration.BaseEnum;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -20,9 +21,9 @@ import java.lang.reflect.Method;
  *
  */
 @Slf4j
-public class EnumDeserializer extends StdDeserializer<Enum<?>> {
+public class EnumDeserializer extends StdDeserializer<BaseEnum<?>> {
     public final static EnumDeserializer INSTANCE = new EnumDeserializer();
-    private final static String ALL_ENUM_STRING_CONVERT_METHOD = "get";
+    private final static String ALL_ENUM_STRING_CONVERT_METHOD = "getByDesp";
     private final static String ALL_ENUM_KEY_FIELD = "code";
 
     public EnumDeserializer() {
@@ -30,7 +31,7 @@ public class EnumDeserializer extends StdDeserializer<Enum<?>> {
     }
 
     @Override
-    public Enum<?> deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+    public BaseEnum<?> deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
         JsonToken token = p.getCurrentToken();
         String value = null;
         while (!token.isStructEnd()) {
@@ -58,7 +59,7 @@ public class EnumDeserializer extends StdDeserializer<Enum<?>> {
         Class<?> fieldType = field.getType();
         try {
             Method method = fieldType.getMethod(ALL_ENUM_STRING_CONVERT_METHOD, String.class);
-            return (Enum<?>) method.invoke(null, value);
+            return (BaseEnum<?>) method.invoke(null, value);
         } catch (NoSuchMethodException | SecurityException | IllegalAccessException | InvocationTargetException e) {
             log.warn("解析枚举失败", e);
             return null;

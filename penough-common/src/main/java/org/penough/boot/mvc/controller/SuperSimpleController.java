@@ -12,7 +12,7 @@ import java.lang.reflect.ParameterizedType;
  * @param <S>      Service
  * @param <Entity> 实体
  * @author Penough
- * @date 2020/11/04
+ * @since 0.0.1
  */
 public class SuperSimpleController<S extends SuperService<Entity>, Entity> implements BaseController<Entity> {
 
