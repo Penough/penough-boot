@@ -12,6 +12,12 @@ public interface BaseEnum<T extends Serializable> extends IEnum {
     T getCode();
 
     /**
+     * 务必重写，getDesp方法
+     * @return
+     */
+    String getDesp();
+
+    /**
      * 数据库存值
      * @return
      */

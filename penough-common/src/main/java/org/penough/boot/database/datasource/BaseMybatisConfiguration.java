@@ -102,10 +102,6 @@ public class BaseMybatisConfiguration {
         return Collections.emptyList();
     }
 
-    @Bean
-    public ConfigurationCustomizer configurationCustomizer() {
-        return configuration -> configuration.setUseDeprecatedExecutor(false);
-    }
 
     @Bean("myMetaObjectHandler")
     @ConditionalOnMissingBean

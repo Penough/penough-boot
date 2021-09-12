@@ -1,11 +1,13 @@
 package org.penough.boot.mvc.jackson;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.core.JsonTokenId;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.deser.JSR310DateTimeDeserializerBase;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import org.penough.boot.common.utils.DateUtils;
 
@@ -52,9 +54,18 @@ public class MyLocalDateTimeDeserializer extends JSR310DateTimeDeserializerBase<
         super(base, leniency);
     }
 
+    protected MyLocalDateTimeDeserializer(MyLocalDateTimeDeserializer base, JsonFormat.Shape shape) {
+        super(base, shape);
+    }
+
     @Override
     protected MyLocalDateTimeDeserializer withLeniency(Boolean leniency) {
         return new MyLocalDateTimeDeserializer(this, leniency);
+    }
+
+    @Override
+    protected JSR310DateTimeDeserializerBase<LocalDateTime> withShape(JsonFormat.Shape shape) {
+        return new MyLocalDateTimeDeserializer(this, shape);
     }
 
     @Override
