@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-    SwaggerAutoConfiguration
+    org.penough.boot.swagger2.SwaggerAutoConfiguration

@@ -13,12 +13,11 @@
     <url>http://www.penough.com</url>
 
     <properties>
-        <spring.boot.version>2.2.7.RELEASE</spring.boot.version>
-        <mybatis.plus.version>3.4.0</mybatis.plus.version>
+        <spring.boot.version>2.5.4</spring.boot.version>
         <lombok.version>1.18.14</lombok.version>
         <springfox.swagger2.version>2.9.2</springfox.swagger2.version>
         <swagger.version>1.5.22</swagger.version>
-        <mybatisplus.version>3.4.0</mybatisplus.version>
+        <mybatisplus.version>3.4.3.3</mybatisplus.version>
         <hutool.version>5.3.8</hutool.version>
         <spring.boot.redis.version>2.3.1.RELEASE</spring.boot.redis.version>
         <fastjson.version>1.2.75</fastjson.version>
