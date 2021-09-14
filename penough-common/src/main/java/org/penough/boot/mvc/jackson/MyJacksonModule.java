@@ -11,6 +11,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import org.penough.boot.common.utils.DateUtils;
 import org.penough.boot.database.enumeration.BaseEnum;
 import org.penough.boot.mvc.converter.EnumDeserializer;
+import org.penough.boot.mvc.converter.PeDeserializers;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -28,6 +29,7 @@ public class MyJacksonModule extends SimpleModule {
 
     public MyJacksonModule() {
         super(PackageVersion.VERSION);
+        this._deserializers = new PeDeserializers();
         this.addDeserializer(LocalDateTime.class, MyLocalDateTimeDeserializer.INSTANCE);
         this.addDeserializer(LocalDate.class, new LocalDateDeserializer(DateTimeFormatter.ofPattern(DateUtils.DEFAULT_DATE_FORMAT)));
         this.addDeserializer(BaseEnum.class, EnumDeserializer.INSTANCE);
