@@ -14,6 +14,8 @@
     <module>penough-swagger2-starter</module>
     <module>penough-logger-starter</module>
     <module>penough-core</module>
+    <module>penough-cache-starter</module>
+    <module>penough-mq-starter</module>
   </modules>
 
   <name>penough-boot</name>

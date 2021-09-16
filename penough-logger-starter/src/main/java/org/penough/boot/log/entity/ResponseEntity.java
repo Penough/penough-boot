@@ -27,7 +27,6 @@ import java.util.Map;
 public class ResponseEntity<T> {
     public static final String DEF_ERROR_MESSAGE = "系统繁忙，请稍候再试";
     public static final String HYSTRIX_ERROR_MESSAGE = "请求超时，请稍候再试";
-    public static final int TIMEOUT_CODE = -2;
     /**
      * 状态码,RFC规范
      */
