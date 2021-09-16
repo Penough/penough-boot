@@ -3,7 +3,8 @@ package org.penough.boot.database.datasource;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import org.penough.boot.core.constants.Constants;
-import org.penough.boot.common.utils.ThreadLocalUtil;
+import org.penough.boot.core.utils.ReflectUtil;
+import org.penough.boot.core.utils.ThreadLocalUtil;
 import org.penough.boot.database.entity.BaseEntity;
 import org.penough.boot.database.entity.SuperEntity;
 import lombok.NoArgsConstructor;
@@ -67,7 +68,7 @@ public class PeMetaObjectHandler implements MetaObjectHandler {
      * @param timeField 时间属性
      */
     private void setTimeField(MetaObject obj, Object entity, String timeField){
-        Object time = reflectInvokeMethod(entity, GETTER_PREFIX + upperFirst(timeField), null);
+        Object time = ReflectUtil.reflectInvokeMethod(entity, GETTER_PREFIX + upperFirst(timeField), null);
         if(time == null){
             this.setFieldValByName(timeField, LocalDateTime.now(), obj);
         }
@@ -80,41 +81,16 @@ public class PeMetaObjectHandler implements MetaObjectHandler {
      * @param userField
      */
     private void setUserField(MetaObject obj, Object entity, String userField){
-        Object user = reflectInvokeMethod(entity, GETTER_PREFIX + upperFirst(userField), null);
+        Object user = ReflectUtil.reflectInvokeMethod(entity, GETTER_PREFIX + upperFirst(userField), null);
         if(StringUtils.isBlank((String)user)){
             // 获取用户账号 —> 设置用户字段
             // 获取本地用户对象
             Object userObj = ThreadLocalUtil.getUser();
             if(userObj == null) return;
             // 反射获取用户编码getUserCode()
-            String userCode = String.valueOf(reflectInvokeMethod(userObj, GETTER_PREFIX + upperFirst(Constants.USER_CODE_FIELD), null));
+            String userCode = String.valueOf(ReflectUtil.reflectInvokeMethod(userObj, GETTER_PREFIX + upperFirst(Constants.USER_CODE_FIELD), null));
             this.setFieldValByName(userField, userCode, obj);
         }
-    }
-
-
-
-    /**
-     * 反射调用方法
-     * @param obj 对象
-     * @param methodName 方法名
-     * @param argTypes 参数类型
-     * @param args 参数值
-     * @return
-     */
-    private Object reflectInvokeMethod(Object obj, String methodName, Class[] argTypes, Object... args){
-        Class cla = obj.getClass();
-        Object res = null;
-        try{
-            Method method = cla.getMethod(methodName, argTypes);
-            res = method.invoke(obj, args);
-        }catch (NoSuchMethodException e){
-            log.info("实体异常，未获取" + methodName + "方法");
-        }catch (IllegalAccessException| InvocationTargetException e){
-            e.printStackTrace();
-            log.info("方法访问异常" + methodName);
-        }
-        return res;
     }
 
     /**

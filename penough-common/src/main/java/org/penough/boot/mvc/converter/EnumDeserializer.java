@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import lombok.extern.slf4j.Slf4j;
 import org.penough.boot.database.enumeration.BaseEnum;
-import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.lang.reflect.Field;

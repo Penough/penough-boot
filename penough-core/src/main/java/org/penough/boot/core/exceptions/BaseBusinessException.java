@@ -2,7 +2,7 @@ package org.penough.boot.core.exceptions;
 
 
 import org.penough.boot.core.constants.Constants;
-import org.penough.boot.core.exceptions.code.BaseExceptionCode;
+import org.penough.boot.core.code.BaseCode;
 
 /**
  * 自定义业务异常类（强化）
@@ -47,7 +47,7 @@ public class BaseBusinessException extends CustomException {
         return new BaseBusinessException(status, code, msg);
     }
 
-    public static BaseBusinessException wrap(BaseExceptionCode ec){
+    public static BaseBusinessException wrap(BaseCode ec){
         return new BaseBusinessException(ec.getStatus(), ec.getCode(), ec.getMsg());
     }
 

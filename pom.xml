@@ -12,7 +12,7 @@
     <module>penough-dependencies</module>
     <module>penough-common</module>
     <module>penough-swagger2-starter</module>
-<!--    <module>penough-logger-starter</module>-->
+    <module>penough-logger-starter</module>
     <module>penough-core</module>
   </modules>
 
@@ -82,5 +82,17 @@
 <!--    </plugins>-->
 <!--  </build>-->
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>8</source>
+          <target>8</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>

@@ -32,4 +32,7 @@ public class Constants {
 	public static final String SUCCESS_CODE = "success";
 	public static final int FAILED_STATUS = 500;
 	public static final String FAILED_CODE = "sys-internal-exception";
+
+	// log部分
+	public static final String LOG_TRACE_ID_HEADER = "x-trace-header";
 }

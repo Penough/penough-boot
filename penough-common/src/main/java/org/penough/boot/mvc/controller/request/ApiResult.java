@@ -4,7 +4,7 @@ package org.penough.boot.mvc.controller.request;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.penough.boot.core.exceptions.BaseBusinessException;
-import org.penough.boot.core.exceptions.code.ExceptionCode;
+import org.penough.boot.core.code.ExceptionCode;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

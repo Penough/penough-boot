@@ -5,7 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.MyBatisSystemException;
 import org.penough.boot.core.exceptions.BaseBusinessException;
-import org.penough.boot.core.exceptions.code.ExceptionCode;
+import org.penough.boot.core.code.ExceptionCode;
 import org.penough.boot.mvc.controller.request.ApiResult;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;

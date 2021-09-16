@@ -1,6 +1,7 @@
-package org.penough.boot.common.utils;
+package org.penough.boot.core.utils;
 
 import cn.hutool.core.convert.Convert;
+import lombok.extern.slf4j.Slf4j;
 import org.penough.boot.core.constants.Constants;
 
 import java.util.LinkedHashMap;
@@ -12,6 +13,7 @@ import java.util.Map;
  * @author Penough
  * @date 2020/11/05
  */
+
 public class ThreadLocalUtil {
     private static final ThreadLocal<Map<String, Object>> THREAD_LOCAL = new ThreadLocal();
 

@@ -1,4 +1,4 @@
-package org.penough.boot.core.exceptions.code;
+package org.penough.boot.core.code;
 
 /**
  * 异常码接口类
@@ -6,16 +6,16 @@ package org.penough.boot.core.exceptions.code;
  * @author Penough
  * @date 2020/10/22
  */
-public interface BaseExceptionCode {
+public interface BaseCode {
 
     /**
-     * 获取异常信息
+     * 获取业务信息
      * @return
      */
     String getMsg();
 
     /**
-     * 获取异常码【自定义】
+     * 获取业务码【自定义】
      * @return
      */
     String getCode();

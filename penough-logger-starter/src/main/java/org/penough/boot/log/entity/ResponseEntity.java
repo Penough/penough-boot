@@ -1,13 +1,16 @@
 package org.penough.boot.log.entity;
 
-import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.penough.boot.core.exceptions.BaseBusinessException;
-import org.penough.boot.core.exceptions.code.BaseExceptionCode;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.SneakyThrows;
 import lombok.experimental.Accessors;
+import org.penough.boot.core.code.BaseCode;
+import org.penough.boot.core.code.BusinessCode;
+import org.penough.boot.core.code.ExceptionCode;
+import org.penough.boot.core.exceptions.BaseBusinessException;
+import org.penough.boot.core.utils.JsonUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,19 +27,17 @@ import java.util.Map;
 public class ResponseEntity<T> {
     public static final String DEF_ERROR_MESSAGE = "系统繁忙，请稍候再试";
     public static final String HYSTRIX_ERROR_MESSAGE = "请求超时，请稍候再试";
-    public static final int SUCCESS_CODE = 0;
-    public static final int FAIL_CODE = -1;
     public static final int TIMEOUT_CODE = -2;
     /**
-     * 统一参数验证异常
+     * 状态码,RFC规范
      */
-    public static final int VALID_EX_CODE = -9;
-    public static final int OPERATION_EX_CODE = -10;
+    @ApiModelProperty(value = "状态码,RFC规范")
+    private int status;
     /**
-     * 调用是否成功标识，0：成功，-1:系统繁忙，此时请开发者稍候再试 详情见[ExceptionCode]
+     * 自定义业务码
      */
-    @ApiModelProperty(value = "响应编码:0/200-请求处理成功")
-    private int code;
+    @ApiModelProperty(value = "自定义业务码")
+    private String code;
 
     /**
      * 是否执行默认操作
@@ -74,23 +75,49 @@ public class ResponseEntity<T> {
         super();
     }
 
-    public ResponseEntity(int code, T data, String msg) {
+    public ResponseEntity(int status, String code, T data, String msg) {
+        this.status = status;
         this.code = code;
         this.data = data;
         this.msg = msg;
         this.defExec = false;
     }
 
-    public ResponseEntity(int code, T data, String msg, boolean defExec) {
+    public ResponseEntity(int status, String code, T data, String msg, boolean defExec) {
+        this.status = status;
         this.code = code;
         this.data = data;
         this.msg = msg;
         this.defExec = defExec;
     }
 
-    public static <E> ResponseEntity<E> result(int code, E data, String msg) {
-        return new ResponseEntity<>(code, data, msg);
+    public ResponseEntity(BaseCode baseCode, T data) {
+        this.status = baseCode.getStatus();
+        this.code = baseCode.getCode();
+        this.msg = baseCode.getMsg();
+        this.data = data;
     }
+
+    public ResponseEntity(BaseCode baseCode, T data, String msg) {
+        this.status = baseCode.getStatus();
+        this.code = baseCode.getCode();
+        this.msg = msg;
+        this.data = data;
+    }
+
+    public ResponseEntity(BaseCode baseCode, T data, boolean defExec) {
+        this.status = baseCode.getStatus();
+        this.code = baseCode.getCode();
+        this.msg = baseCode.getMsg();
+        this.data = data;
+        this.defExec = defExec;
+    }
+
+    public static <E> ResponseEntity<E> result(int status, String code, E data, String msg) {
+        return new ResponseEntity<>(status, code, data, msg);
+    }
+
+
 
     /**
      * 请求成功消息
@@ -99,24 +126,25 @@ public class ResponseEntity<T> {
      * @return RPC调用结果
      */
     public static <E> ResponseEntity<E> success(E data) {
-        return new ResponseEntity<>(SUCCESS_CODE, data, "ok");
+        return new ResponseEntity<>(BusinessCode.SUCCESS, data);
     }
 
     public static ResponseEntity<Boolean> success() {
-        return new ResponseEntity<>(SUCCESS_CODE, true, "ok");
+        return new ResponseEntity<>(BusinessCode.SUCCESS, true);
     }
 
 
     public static <E> ResponseEntity<E> successDef(E data) {
-        return new ResponseEntity<>(SUCCESS_CODE, data, "ok", true);
+        return new ResponseEntity<>(BusinessCode.SUCCESS, data, true);
     }
 
     public static <E> ResponseEntity<E> successDef() {
-        return new ResponseEntity<>(SUCCESS_CODE, null, "ok", true);
+        return new ResponseEntity<>(BusinessCode.SUCCESS, null, true);
     }
 
     public static <E> ResponseEntity<E> successDef(E data, String msg) {
-        return new ResponseEntity<>(SUCCESS_CODE, data, msg, true);
+        return new ResponseEntity<>(BusinessCode.SUCCESS.getStatus(),
+                BusinessCode.SUCCESS.getCode(), data, msg, true);
     }
 
     /**
@@ -127,7 +155,7 @@ public class ResponseEntity<T> {
      * @return RPC调用结果
      */
     public static <E> ResponseEntity<E> success(E data, String msg) {
-        return new ResponseEntity<>(SUCCESS_CODE, data, msg);
+        return new ResponseEntity<>(BusinessCode.SUCCESS, data, msg);
     }
 
     /**
@@ -136,20 +164,20 @@ public class ResponseEntity<T> {
      * @param msg
      * @return
      */
-    public static <E> ResponseEntity<E> fail(int code, String msg) {
+    public static <E> ResponseEntity<E> fail(ExceptionCode code, String msg) {
         return new ResponseEntity<>(code, null, (msg == null || msg.isEmpty()) ? DEF_ERROR_MESSAGE : msg);
     }
 
     public static <E> ResponseEntity<E> fail(String msg) {
-        return fail(OPERATION_EX_CODE, msg);
+        return fail(ExceptionCode.SYSTEM_EXCEPTION, msg);
     }
 
     public static <E> ResponseEntity<E> fail(String msg, Object... args) {
         String message = (msg == null || msg.isEmpty()) ? DEF_ERROR_MESSAGE : msg;
-        return new ResponseEntity<>(OPERATION_EX_CODE, null, String.format(message, args));
+        return new ResponseEntity<>(ExceptionCode.SYSTEM_EXCEPTION, null, String.format(message, args));
     }
 
-    public static <E> ResponseEntity<E> fail(BaseExceptionCode exceptionCode) {
+    public static <E> ResponseEntity<E> fail(BaseCode exceptionCode) {
         return validFail(exceptionCode);
     }
 
@@ -157,7 +185,7 @@ public class ResponseEntity<T> {
         if (exception == null) {
             return fail(DEF_ERROR_MESSAGE);
         }
-        return new ResponseEntity<>(exception.getCode(), null, exception.getMessage());
+        return new ResponseEntity<>(exception.getStatus(), exception.getCode(), null, exception.getMessage());
     }
 
     /**
@@ -167,25 +195,25 @@ public class ResponseEntity<T> {
      * @return RPC调用结果
      */
     public static <E> ResponseEntity<E> fail(Throwable throwable) {
-        return fail(FAIL_CODE, throwable != null ? throwable.getMessage() : DEF_ERROR_MESSAGE);
+        return fail(ExceptionCode.FAILED, throwable != null ? throwable.getMessage() : DEF_ERROR_MESSAGE);
     }
 
     public static <E> ResponseEntity<E> validFail(String msg) {
-        return new ResponseEntity<>(VALID_EX_CODE, null, (msg == null || msg.isEmpty()) ? DEF_ERROR_MESSAGE : msg);
+        return new ResponseEntity<>(ExceptionCode.BASE_VALID_PARAM, null, (msg == null || msg.isEmpty()) ? DEF_ERROR_MESSAGE : msg);
     }
 
     public static <E> ResponseEntity<E> validFail(String msg, Object... args) {
         String message = (msg == null || msg.isEmpty()) ? DEF_ERROR_MESSAGE : msg;
-        return new ResponseEntity<>(VALID_EX_CODE, null, String.format(message, args));
+        return new ResponseEntity<>(ExceptionCode.BASE_VALID_PARAM, null, String.format(message, args));
     }
 
-    public static <E> ResponseEntity<E> validFail(BaseExceptionCode exceptionCode) {
-        return new ResponseEntity<>(exceptionCode.getCode(), null,
+    public static <E> ResponseEntity<E> validFail(BaseCode exceptionCode) {
+        return new ResponseEntity<>(exceptionCode.getStatus(), exceptionCode.getCode(), null,
                 (exceptionCode.getMsg() == null || exceptionCode.getMsg().isEmpty()) ? DEF_ERROR_MESSAGE : exceptionCode.getMsg());
     }
 
     public static <E> ResponseEntity<E> timeout() {
-        return fail(TIMEOUT_CODE, HYSTRIX_ERROR_MESSAGE);
+        return fail(ExceptionCode.SERVICE_TIME_OUT);
     }
 
 
@@ -203,7 +231,7 @@ public class ResponseEntity<T> {
      * @return 是否成功
      */
     public Boolean getIsSuccess() {
-        return this.code == SUCCESS_CODE || this.code == 200;
+        return this.code == BusinessCode.SUCCESS.getCode() || this.status == BusinessCode.SUCCESS.getStatus();
     }
 
     /**
@@ -215,8 +243,9 @@ public class ResponseEntity<T> {
         return !getIsSuccess();
     }
 
+    @SneakyThrows
     @Override
     public String toString() {
-        return JSONObject.toJSONString(this);
+        return JsonUtil.parseJsonString(this);
     }
 }

@@ -5,10 +5,16 @@ import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
 import cn.hutool.extra.servlet.ServletUtil;
-import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.annotations.Api;
+import org.penough.boot.core.constants.Constants;
+import org.penough.boot.core.utils.JsonUtil;
+import org.penough.boot.core.utils.ReflectUtil;
+import org.penough.boot.core.utils.ThreadLocalUtil;
 import org.penough.boot.log.annotations.SysLog;
 import org.penough.boot.log.entity.OptLogDTO;
 import org.penough.boot.log.entity.ResponseEntity;
+import org.penough.boot.log.event.PeLogEvent;
 import org.penough.boot.log.util.LogUtil;
 import org.penough.boot.log.util.constants.StrPool;
 import lombok.extern.slf4j.Slf4j;
@@ -16,26 +22,39 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.MDC;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
+
+import static org.penough.boot.core.constants.Constants.LOG_TRACE_ID_HEADER;
 
 @Aspect
 @Component
 @Slf4j
 public class PeLogAspect {
 
+    @Autowired
+    ApplicationContext applicationContext;
+
     public static final int MAX_LENGTH = 65535;
     private static final ThreadLocal<OptLogDTO> THREAD_LOCAL = new ThreadLocal<>();
+    private static final String USER_CODE_METHOD = "getUserCode";
+    private static final String USER_NAME_METHOD = "getUserName";
     /**
      * 用于SpEL表达式解析.
      */
@@ -121,6 +140,7 @@ public class PeLogAspect {
             // 遇到错误时，请求参数若为空，则记录
             if (!sysLogAnno.request() && sysLogAnno.requestByError() && StrUtil.isEmpty(sysLog.getParams())) {
                 Object[] args = joinPoint.getArgs();
+                // 利用RequestContextHolder直接从ThreadLocal获取本次请求
                 HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
                 String strArgs = getArgs(sysLogAnno, args, request);
                 sysLog.setParams(getText(strArgs));
@@ -142,11 +162,13 @@ public class PeLogAspect {
             if (check(joinPoint, sysLogAnno)) {
                 return;
             }
-
             // 开始时间
             OptLogDTO sysLog = get();
-            sysLog.setCreateUser(String.valueOf(BaseContextHandler.getUserId()));
-            sysLog.setUserName(BaseContextHandler.getName());
+            Object usrObj = ThreadLocalUtil.getUser();
+            String usrCode = (String)ReflectUtil.reflectInvokeMethod(usrObj, USER_CODE_METHOD, null);
+            String usrName = (String)ReflectUtil.reflectInvokeMethod(usrObj, USER_NAME_METHOD, null);
+            sysLog.setCreateUser(usrCode);
+            sysLog.setUserName(usrName);
             String controllerDescription = "";
             Api api = joinPoint.getTarget().getClass().getAnnotation(Api.class);
             if (api != null) {
@@ -184,21 +206,15 @@ public class PeLogAspect {
             String strArgs = getArgs(sysLogAnno, args, request);
             sysLog.setParams(getText(strArgs));
 
-            sysLog.setTrace(MDC.get(BaseContextConstants.LOG_TRACE_ID));
+            //获取全局traceId
+            sysLog.setTrace(Optional.ofNullable(MDC.get(LOG_TRACE_ID_HEADER)).orElse(request.getHeader(LOG_TRACE_ID_HEADER)));
 
             if (request != null) {
                 sysLog.setRequestIp(ServletUtil.getClientIP(request));
                 sysLog.setRequestUri(URLUtil.getPath(request.getRequestURI()));
                 sysLog.setHttpMethod(request.getMethod());
                 sysLog.setUa(StrUtil.sub(request.getHeader("user-agent"), 0, 500));
-                if (BaseContextHandler.getBoot()) {
-                    sysLog.setTenantCode(BaseContextHandler.getTenant());
-                } else {
-                    sysLog.setTenantCode(request.getHeader(BaseContextConstants.JWT_KEY_TENANT));
-                }
-                if (StrUtil.isEmpty(sysLog.getTrace())) {
-                    sysLog.setTrace(request.getHeader(BaseContextConstants.TRACE_ID_HEADER));
-                }
+                // todo 以后再考虑多租户问题
             }
             sysLog.setStartTime(LocalDateTime.now());
 
@@ -248,7 +264,7 @@ public class PeLogAspect {
     private void publishEvent(OptLogDTO sysLog) {
         sysLog.setFinishTime(LocalDateTime.now());
         sysLog.setConsumingTime(sysLog.getStartTime().until(sysLog.getFinishTime(), ChronoUnit.MILLIS));
-        SpringUtils.publishEvent(new SysLogEvent(sysLog));
+        applicationContext.publishEvent(new PeLogEvent(sysLog));
         THREAD_LOCAL.remove();
     }
 
@@ -267,7 +283,7 @@ public class PeLogAspect {
         if (sysLogAnno.request()) {
             try {
                 if (!request.getContentType().contains("multipart/form-data")) {
-                    strArgs = JSONObject.toJSONString(args);
+                    strArgs = JsonUtil.parseJsonString(args);
                 }
             } catch (Exception e) {
                 try {
