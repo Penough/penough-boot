@@ -38,11 +38,6 @@ public class DatabaseProperties {
      */
     private Boolean isSeata = false;
 
-//    /**
-//     * 是否启用P拦截器
-//     */
-//    private Boolean enablePInterceptor = true;
-
     /**
      * 是否启用数据查询权限
      */
@@ -62,6 +57,14 @@ public class DatabaseProperties {
      * 数据库类型，默认Mysql
      */
     protected DbType dbType = DbType.MYSQL;
+
+    /**
+     * 是否启用mybatis二级缓存<br>
+     * 正常建议不启动，在分布式环境下使用本地缓存，会存在诸多隐患<br>
+     * 如脏读，数据延迟等<br>
+     * 但是在数据服务/分布式缓存服务不可用，仍需要服务提供数据的情况，可启用该数据缓存<br>
+     */
+    protected Boolean localCacheEnabled = false;
 
     /**
      * 需要参与事务管理的操作

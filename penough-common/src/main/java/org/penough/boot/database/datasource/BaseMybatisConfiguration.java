@@ -16,12 +16,14 @@ import org.penough.boot.database.properties.DatabaseProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 
 import java.util.Collections;
 import java.util.List;
 
 @Slf4j
+@Configuration
 public class BaseMybatisConfiguration {
 
     protected DatabaseProperties databaseProperties;
@@ -42,8 +44,6 @@ public class BaseMybatisConfiguration {
     public MybatisPlusInterceptor mybatisPlusInterceptor(){
         // 声明MP拦截器
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
-
-
 
         // 自定义MP分页器前内联插件添加
         List<InnerInterceptor> beforePaginationInterceptors = getBeforePaginationInterceptor();
@@ -77,6 +77,7 @@ public class BaseMybatisConfiguration {
             IllegalSQLInnerInterceptor illegalSQLInnerInterceptor = new IllegalSQLInnerInterceptor();
             interceptor.addInnerInterceptor(illegalSQLInnerInterceptor);
         }
+
         return interceptor;
     }
 

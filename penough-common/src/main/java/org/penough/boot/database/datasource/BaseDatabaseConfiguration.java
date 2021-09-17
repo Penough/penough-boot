@@ -4,7 +4,9 @@ import com.baomidou.mybatisplus.autoconfigure.MybatisPlusProperties;
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusPropertiesCustomizer;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.penough.boot.database.properties.DatabaseProperties;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.util.Assert;
@@ -22,9 +24,11 @@ import java.util.List;
  * @date 2020/12/01
  */
 @Slf4j
+@Configuration
 @AllArgsConstructor
 public abstract class BaseDatabaseConfiguration implements InitializingBean {
 
+    protected final DatabaseProperties databaseProperties;
     protected final MybatisPlusProperties properties;
 
     private final List<MybatisPlusPropertiesCustomizer> mybatisPlusPropertiesCustomizers;
