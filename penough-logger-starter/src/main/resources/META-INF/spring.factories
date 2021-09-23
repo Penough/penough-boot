@@ -1,2 +1,2 @@
-org.springframework.boot.autoconfigure. =\
+org.springframework.boot.autoconfigure.EnableAutoConfiguration =\
     org.penough.boot.log.LogAutoConfiguration

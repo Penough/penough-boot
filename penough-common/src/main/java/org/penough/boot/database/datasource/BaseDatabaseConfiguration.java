@@ -1,11 +1,19 @@
 package org.penough.boot.database.datasource;
 
+import com.baomidou.mybatisplus.autoconfigure.ConfigurationCustomizer;
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusProperties;
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusPropertiesCustomizer;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.session.ExecutorType;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.mybatis.spring.annotation.MapperScan;
+import org.penough.boot.database.mybatis.scan.PeMapperScan;
 import org.penough.boot.database.properties.DatabaseProperties;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -46,6 +54,25 @@ public abstract class BaseDatabaseConfiguration implements InitializingBean {
         if(this.properties.isCheckConfigLocation() && StringUtils.hasText(this.properties.getConfigLocation())){
             Resource resource = this.resourceLoader.getResource(this.properties.getConfigLocation());
             Assert.state(resource.exists(), "Cannot find config location: " + resource + " (please add config file or check your Mybatis configuration)");
+        }
+    }
+
+    /**
+     * 通过预先装载SqlSessionFactory对{@link com.baomidou.mybatisplus.autoconfigure.MybatisPlusAutoConfiguration#sqlSessionTemplate(SqlSessionFactory)}来获得动态连接池的效果<br>
+     * 利用{@link MapperScan#sqlSessionTemplateRef()}来生成特定连接池包装的数据源
+     *
+     * @see com.baomidou.mybatisplus.autoconfigure.MybatisPlusAutoConfiguration
+     * @see MapperScan
+     * @param sqlSessionFactory
+     * @return
+     */
+    @Bean
+    public SqlSessionTemplate sqlSessionTemplate(SqlSessionFactory sqlSessionFactory) {
+        ExecutorType executorType = this.properties.getExecutorType();
+        if (executorType != null) {
+            return new SqlSessionTemplate(sqlSessionFactory, executorType);
+        } else {
+            return new SqlSessionTemplate(sqlSessionFactory);
         }
     }
 
