@@ -1,6 +1,5 @@
 package org.penough.boot.database.datasource;
 
-import com.baomidou.mybatisplus.autoconfigure.ConfigurationCustomizer;
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusProperties;
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusPropertiesCustomizer;
 import lombok.AllArgsConstructor;
@@ -12,11 +11,11 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.penough.boot.database.mybatis.scan.PeMapperScan;
 import org.penough.boot.database.properties.DatabaseProperties;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -28,11 +27,12 @@ import java.util.List;
  *
  * todo 动态数据源相关功能没有添加，需要考虑设计
  *
- * @author pengcheng
+ * @author Penough
  * @date 2020/12/01
  */
 @Slf4j
 @Configuration
+@PeMapperScan(basePackages = {"${penough.database.base-package}"}, annotationClass = Repository.class)
 @AllArgsConstructor
 public abstract class BaseDatabaseConfiguration implements InitializingBean {
 
@@ -75,5 +75,7 @@ public abstract class BaseDatabaseConfiguration implements InitializingBean {
             return new SqlSessionTemplate(sqlSessionFactory);
         }
     }
+
+
 
 }
