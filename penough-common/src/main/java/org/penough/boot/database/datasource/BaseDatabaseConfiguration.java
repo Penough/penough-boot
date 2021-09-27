@@ -23,9 +23,8 @@ import org.springframework.util.StringUtils;
 import java.util.List;
 
 /**
- * 基础数据库配置类
- *
- * todo 动态数据源相关功能没有添加，需要考虑设计
+ * 基础数据库配置类<br>
+ * 动态数据源相关功能直接采用MP的多数据源处理
  *
  * @author Penough
  * @date 2020/12/01
@@ -59,7 +58,9 @@ public abstract class BaseDatabaseConfiguration implements InitializingBean {
 
     /**
      * 通过预先装载SqlSessionFactory对{@link com.baomidou.mybatisplus.autoconfigure.MybatisPlusAutoConfiguration#sqlSessionTemplate(SqlSessionFactory)}来获得动态连接池的效果<br>
-     * 利用{@link MapperScan#sqlSessionTemplateRef()}来生成特定连接池包装的数据源
+     * 利用{@link MapperScan#sqlSessionTemplateRef()}来生成特定连接池包装的数据源<br>
+     * 由于MP已支持Seata，Druid，P6SPY，所以不在需要以上操作<br>
+     * 但还是要为SqlSession提供Template操作，根据ExecutorType处理。
      *
      * @see com.baomidou.mybatisplus.autoconfigure.MybatisPlusAutoConfiguration
      * @see MapperScan
