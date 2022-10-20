@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 /**
@@ -18,10 +19,14 @@ import org.springframework.util.StringUtils;
  * @since 0.0.1
  */
 @Slf4j
+@Component
 public class JsonUtil {
-    @Autowired
-    @Lazy
+
     private static ObjectMapper objectMapper;
+    
+    public JsonUtil(ObjectMapper mapper) {
+        objectMapper = mapper;
+    }
 
     /**
      * obj转json
